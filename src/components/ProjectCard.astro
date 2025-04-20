@@ -1,0 +1,44 @@
+---
+type Props = {
+  url: string;
+  name: string;
+  time: string;
+  description?: string;
+  demo?: string;
+  code?: string;
+};
+
+const { url, name, time, description = "", demo, code } = Astro.props;
+---
+<div class="flex flex-col w-full gap-2">
+  <div class='flex justify-between'>
+    <div class='flex flex-col gap-1 rounded p-1'>
+      <h2>
+        <a class='underline underline-offset-4 hover:text-hover' href={url}>
+          {name}
+        </a>
+      </h2>
+      <small class='text-sm text-secondary'>{time}</small>
+    </div>
+    <div>
+      <div class="flex items-center gap-2">
+        {demo && (
+        <a href={demo} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-hover hover:text-gray-400">
+          <span>Live</span>
+        </a>
+        )}
+        |
+        {code && (
+        <a href={code} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-hover hover:text-gray-400">
+          <span>Code</span>
+        </a>
+        )}
+      </div>
+    </div>
+  </div>
+  {
+    description.trim() && (
+      <p class='text-sm text-secondary'>{description.trim()}</p>
+    )
+  }
+</div>

@@ -15,7 +15,10 @@ const { title, description } = Astro.props;
 
 <html lang='en'>
   <head>
-    <MainHead title={title} description={description} />
+    <MainHead
+          title={`${title? title+" | ":''} ${SITE_CONFIG.defaultTitle}`}
+      description={description}
+    />
     {SITE_CONFIG.enableDarkMode && <ThemeBlockingScript />}
     <ViewTransitions fallback='swap' />
   </head>

@@ -1,0 +1,55 @@
+---
+import ProjectCard from "@components/ProjectCard.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getSlug } from "@utils/slugs";
+import { getCollection } from "astro:content";
+import { SITE_CONFIG } from "@src/site-config";
+const allLearnings = await getCollection("pets");
+
+const sortedLearnings = allLearnings
+  .filter((project) => project.data.isDraft !== true)
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishDate).valueOf() -
+      new Date(a.data.publishDate).valueOf()
+  );
+---
+
+<BaseLayout title='Pet Projects' description='Projects I do for fun!'>
+  {
+    sortedLearnings.length > 0 ? (
+      <ul class='flex flex-col gap-5'>
+        {sortedLearnings.map((project) => {
+          const formattedDate = new Date(
+            project.data.publishDate
+          ).toLocaleDateString("en-us", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          return (
+            <li>
+              <ProjectCard
+                name={project.data.title}
+                url={`/pets/${getSlug(project.data.title)}/`}
+                demo={project.data.demo}
+                code={project.data.code}
+                description={project.data.description}
+                time={formattedDate}
+              />
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <div class=''>
+        <h2 class='mb-2 font-bold opacity-50'>Still adding...</h2>
+        <p class=''>
+          In the meantime, check{" "}
+          <a href='https://github.com/IamSAL'>my github</a>{" "}
+        </p>
+      </div>
+    )
+  }
+</BaseLayout>

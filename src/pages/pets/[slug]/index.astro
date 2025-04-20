@@ -1,0 +1,38 @@
+---
+import ProjectLayout from "@layouts/ProjectLayout.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getSlug } from "@utils/slugs";
+import { getCollection } from "astro:content";
+
+export const prerender = true;
+
+type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]["props"];
+
+export async function getStaticPaths() {
+  const allLearnings = await getCollection("pets");
+
+  return allLearnings
+    .filter((project) => project.data.isDraft !== true)
+    .map((project) => ({
+      params: { slug: getSlug(project.data.title) },
+      props: { project },
+    }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<BaseLayout title={project.data.title}>
+  <ProjectLayout
+    title={project.data.title}
+    publishDate={project.data.publishDate}
+    tags={project.data.tags}
+    demo={project.data.demo}
+    code={project.data.code}
+   
+
+  >
+    <Content />
+  </ProjectLayout>
+</BaseLayout>

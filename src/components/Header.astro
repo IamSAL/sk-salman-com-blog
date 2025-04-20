@@ -7,10 +7,30 @@ import ThemeIcon from "./ThemeIcon.astro";
 <header class='flex flex-col gap-8'>
   <div class='flex justify-between gap-2 items-center'>
   <img class="rounded-full w-auto h-28" src={SITE_CONFIG.avatar} alt="Sheikh Salman's avatar">
+    <div class="flex flex-col gap-2">
     <div>
-      <a class='font-bold' href='/'>{SITE_CONFIG.name}</a>
+
+      <div class="flex gap-4 items-center mb-2 justify-start align-middle" > <a class='font-bold' href='/'>{SITE_CONFIG.name}</a>
+      <div class="flex gap-4 items-center">
+
+      {
+      SITE_CONFIG.contact.map((contact) => (
+         <a href={contact.url} set:html={contact.icon} target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400">
+     
+    </a>
+      ))
+    }
+   
+   
+  </div></div>
       <p>{SITE_CONFIG.headlineOne}</p>
       {SITE_CONFIG.headlineTwo && <p>{SITE_CONFIG.headlineTwo}</p>}
+    
+    </div>
+
+    <div>
+
+    </div>
     </div>
     {
       SITE_CONFIG.enableDarkMode && (
