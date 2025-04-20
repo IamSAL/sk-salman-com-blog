@@ -1,5 +1,6 @@
 type SiteConfig = {
   name: string;
+  avatar?: string;
   headlineOne: string;
   headlineTwo?: string;
   defaultTitle: string;
@@ -29,68 +30,46 @@ export const TWITTER_CONFIG: TwitterConfig = {
 };
 
 export const SITE_CONFIG: SiteConfig = {
-  name: "Hruthik Reddy",
-  headlineOne: "Mostly a Product Generalist.",
-  headlineTwo: "Sometimes a Nature Photographer.",
-  defaultTitle: "Frontend Hire: Free Portfolio Template",
+  name: "Sk Salman",
+  avatar: "https://avatars.githubusercontent.com/u/34414233",
+  headlineOne: "Living on TypeScript, React, Next.js, and Angular.",
+  headlineTwo: "Building fast, interactive, and accessible interfaces.",
+  defaultTitle: "Sk Salman- Portfolio",
   defaultDescription:
-    "A free template that you can use to build your portfolio in minutes.",
+    "Frontend developer with expertise in TypeScript, React, Next.js, and Angular. Focused on quality UX and DX.",
   timeline: [
     {
-      name: "withYHR",
-      url: "https://withyhr.com/",
-      time: "2024-Present",
-      description: "Building web products as a dev studio",
+      name: "KONA Software Lab Ltd.",
+      url: "#",
+      time: "Apr 2022 – Dec 2023",
+      description: "Developing UIs for fintech with React/Next/Angular.",
     },
     {
-      name: "Frontend Hire",
-      url: "https://frontendhire.com/",
-      time: "2023-Present",
-      description: "Trying to solve frontend developer interviews and hiring",
+      name: "SoftwindTech Ltd.",
+      url: "#",
+      time: "Sep 2021 – Apr 2022",
+      description:
+        "Fast paced and futuristic startup. Developed UIs for various projects.",
     },
     {
-      name: "Freelancer",
-      url: "https://withyhr.com/",
-      time: "2023",
-      description: "Worked with New Relic, HireHunch, and XRG",
-    },
-    {
-      name: "University of Leeds",
-      url: "https://www.leeds.ac.uk/",
-      time: "2022-2023",
-      description: "Got another computer science degree",
-    },
-    {
-      name: "HireHunch",
-      url: "https://hirehunch.com/",
-      time: "2021-2022",
-      description: "Led core UI development for multiple products",
-    },
-    {
-      name: "Piktorlabs",
-      url: "https://piktorlabs.com/",
-      time: "2021",
-      description: "Started the dev career here",
-    },
-    {
-      name: "BML Munjal University",
-      url: "https://www.bmu.edu.in/",
-      time: "2017-2021",
-      description: "Got a computer science degree",
+      name: "Daffodil International University",
+      url: "#",
+      time: "Jan 2017 – Dec 2020",
+      description: "BSc. in CSE",
     },
   ],
   contact: [
     {
       name: "LinkedIn",
-      url: "https://www.linkedin.com/in/yarala-hruthik-reddy/",
-    },
-    {
-      name: "Twitter",
-      url: "https://twitter.com/thisisyhr",
+      url: "https://www.linkedin.com/in/sk-salman-dev/",
     },
     {
       name: "GitHub",
-      url: "https://github.com/yaralahruthik",
+      url: "https://github.com/IamSAL",
+    },
+    {
+      name: "Email",
+      url: "mailto:sksalmanmiah@gmail.com",
     },
   ],
   enableDarkMode: true,

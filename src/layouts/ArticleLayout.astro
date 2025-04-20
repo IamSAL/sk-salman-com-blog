@@ -33,6 +33,6 @@ const formattedDate = new Date(publishDate).toLocaleDateString("en-us", {
       )
     }
   </span>
-  {description.trim() && <p>{description.trim()}</p>}
+  {description.trim() && <p class="p-5 bg-gray-100 rounded-lg"><span class="font-bold pr-2 text-gray-500">TLDR; </span>{description.trim()}</p>}
   <slot />
 </article>
