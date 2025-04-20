@@ -13,10 +13,10 @@ type Props = {
 const { title, description } = Astro.props;
 ---
 
-<html lang='en' class="dark">
+<html lang='en' class='dark'>
   <head>
     <MainHead
-          title={`${title? title+" | ":''} ${SITE_CONFIG.defaultTitle}`}
+      title={`${title ? title + " | " : ""} ${SITE_CONFIG.defaultTitle}`}
       description={description}
     />
     {SITE_CONFIG.enableDarkMode && <ThemeBlockingScript />}

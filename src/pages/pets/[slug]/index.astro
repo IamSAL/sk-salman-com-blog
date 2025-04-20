@@ -3,6 +3,7 @@ import ProjectLayout from "@layouts/ProjectLayout.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { getSlug } from "@utils/slugs";
 import { getCollection } from "astro:content";
+import CommentBox from "@components/CommentBox";
 
 export const prerender = true;
 
@@ -30,9 +31,8 @@ const { Content } = await project.render();
     tags={project.data.tags}
     demo={project.data.demo}
     code={project.data.code}
-   
-
   >
     <Content />
   </ProjectLayout>
+  <CommentBox client:visible />
 </BaseLayout>
