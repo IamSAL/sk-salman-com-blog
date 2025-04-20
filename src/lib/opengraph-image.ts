@@ -11,7 +11,7 @@ export async function generateImageResponse(
   options: ImageResponseOptions,
 ) {
   const markup = html(template);
-  const svg = await satori(markup, {
+  const svg = await satori(markup as any, {
     width: 1200,
     height: 630,
     fonts: [...(options.fonts || [])],

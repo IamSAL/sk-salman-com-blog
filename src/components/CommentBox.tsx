@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 const COMMENTBOX_PROJECT_ID = import.meta.env.PUBLIC_COMMENTBOX_PROJECT_ID;
 
 const CommentBox = () => {
-  const [count, setcount] = useState(0);
-
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://unpkg.com/commentbox.io/dist/commentBox.min.js";
