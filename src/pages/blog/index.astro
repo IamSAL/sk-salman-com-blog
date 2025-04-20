@@ -1,0 +1,50 @@
+---
+import BlogCard from "@components/BlogCard.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getSlug } from "@utils/slugs";
+import { getCollection } from "astro:content";
+
+const allBlogPosts = await getCollection("blog");
+
+const sortedPosts = allBlogPosts
+  .filter((post) => post.data.isDraft !== true)
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishDate).valueOf() -
+      new Date(a.data.publishDate).valueOf(),
+  );
+---
+
+<BaseLayout title='Blog' description='All my blog posts over the years!'>
+  {
+    sortedPosts.length > 0 ? (
+      <ul class='flex flex-col gap-5'>
+        {sortedPosts.map((post) => {
+          const formattedDate = new Date(
+            post.data.publishDate,
+          ).toLocaleDateString("en-us", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          return (
+            <li>
+              <BlogCard
+                name={post.data.title}
+                url={`/blog/${getSlug(post.data.title)}/`}
+                description={post.data.description}
+                time={formattedDate}
+              />
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <div>
+        <h2 class='mb-2 font-bold'>No Blog Posts Available</h2>
+        <p>Check back later for new content!</p>
+      </div>
+    )
+  }
+</BaseLayout>

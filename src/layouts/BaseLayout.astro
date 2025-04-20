@@ -1,0 +1,30 @@
+---
+import Header from "@components/Header.astro";
+import MainHead from "@components/MainHead.astro";
+import { slide, ViewTransitions } from "astro:transitions";
+import { SITE_CONFIG } from "@src/site-config";
+import ThemeBlockingScript from "@src/scripts/theme-blocking-script.astro";
+
+type Props = {
+  title?: string | undefined;
+  description?: string | undefined;
+};
+
+const { title, description } = Astro.props;
+---
+
+<html lang='en'>
+  <head>
+    <MainHead title={title} description={description} />
+    {SITE_CONFIG.enableDarkMode && <ThemeBlockingScript />}
+    <ViewTransitions fallback='swap' />
+  </head>
+  <body>
+    <div class='mx-auto flex max-w-xl flex-col gap-8 px-4 py-16'>
+      <Header />
+      <main transition:animate={slide({ duration: 600 })}>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "name": "fh-portfolio-template",
+  "type": "module",
+  "version": "0.0.1",
+  "author": {
+    "name": "Hruthik Reddy",
+    "url": "https://github.com/yaralahruthik"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.2",
+    "astro": "^4.16.15",
+    "clsx": "^2.1.1",
+    "satori": "^0.11.1",
+    "satori-html": "^0.3.2",
+    "sharp": "^0.33.5",
+    "slugify": "^1.6.6",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss": "^3.4.12",
+    "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "3.3.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.6.6"
+  }
+}

@@ -1,0 +1,22 @@
+---
+import ExperienceCard from "@components/ExperienceCard.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { SITE_CONFIG } from "@src/site-config";
+---
+
+<BaseLayout>
+  <ul class='flex flex-col gap-5'>
+    {
+      SITE_CONFIG.timeline.map((experience) => (
+        <li>
+          <ExperienceCard
+            name={experience.name}
+            url={experience.url}
+            description={experience.description}
+            time={experience.time}
+          />
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

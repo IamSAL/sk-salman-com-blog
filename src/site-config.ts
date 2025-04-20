@@ -1,0 +1,98 @@
+type SiteConfig = {
+  name: string;
+  headlineOne: string;
+  headlineTwo?: string;
+  defaultTitle: string;
+  defaultDescription: string;
+  timeline: {
+    name: string;
+    url: string;
+    time: string;
+    description?: string;
+  }[];
+  contact: {
+    name: string;
+    url: string;
+  }[];
+  enableDarkMode: boolean;
+  enableTags: boolean;
+};
+
+type TwitterConfig = {
+  url: string;
+  handleName: string;
+};
+
+export const TWITTER_CONFIG: TwitterConfig = {
+  url: "https://twitter.com/thisisyhr",
+  handleName: "thisisyhr",
+};
+
+export const SITE_CONFIG: SiteConfig = {
+  name: "Hruthik Reddy",
+  headlineOne: "Mostly a Product Generalist.",
+  headlineTwo: "Sometimes a Nature Photographer.",
+  defaultTitle: "Frontend Hire: Free Portfolio Template",
+  defaultDescription:
+    "A free template that you can use to build your portfolio in minutes.",
+  timeline: [
+    {
+      name: "withYHR",
+      url: "https://withyhr.com/",
+      time: "2024-Present",
+      description: "Building web products as a dev studio",
+    },
+    {
+      name: "Frontend Hire",
+      url: "https://frontendhire.com/",
+      time: "2023-Present",
+      description: "Trying to solve frontend developer interviews and hiring",
+    },
+    {
+      name: "Freelancer",
+      url: "https://withyhr.com/",
+      time: "2023",
+      description: "Worked with New Relic, HireHunch, and XRG",
+    },
+    {
+      name: "University of Leeds",
+      url: "https://www.leeds.ac.uk/",
+      time: "2022-2023",
+      description: "Got another computer science degree",
+    },
+    {
+      name: "HireHunch",
+      url: "https://hirehunch.com/",
+      time: "2021-2022",
+      description: "Led core UI development for multiple products",
+    },
+    {
+      name: "Piktorlabs",
+      url: "https://piktorlabs.com/",
+      time: "2021",
+      description: "Started the dev career here",
+    },
+    {
+      name: "BML Munjal University",
+      url: "https://www.bmu.edu.in/",
+      time: "2017-2021",
+      description: "Got a computer science degree",
+    },
+  ],
+  contact: [
+    {
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/in/yarala-hruthik-reddy/",
+    },
+    {
+      name: "Twitter",
+      url: "https://twitter.com/thisisyhr",
+    },
+    {
+      name: "GitHub",
+      url: "https://github.com/yaralahruthik",
+    },
+  ],
+  enableDarkMode: true,
+  enableTags: true,
+};

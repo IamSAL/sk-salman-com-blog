@@ -1,0 +1,49 @@
+---
+import LearningsCard from "@components/LearningsCard.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getSlug } from "@utils/slugs";
+import { getCollection } from "astro:content";
+
+const allLearnings = await getCollection("learnings");
+
+const sortedLearnings = allLearnings
+  .filter((learning) => learning.data.isDraft !== true)
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishDate).valueOf() -
+      new Date(a.data.publishDate).valueOf(),
+  );
+---
+
+<BaseLayout title='Learnings' description='All my learnings over the years!'>
+  {
+    sortedLearnings.length > 0 ? (
+      <ul class='flex flex-col gap-5'>
+        {sortedLearnings.map((learning) => {
+          const formattedDate = new Date(
+            learning.data.publishDate,
+          ).toLocaleDateString("en-us", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          return (
+            <li>
+              <LearningsCard
+                name={learning.data.title}
+                url={`/learnings/${getSlug(learning.data.title)}/`}
+                time={formattedDate}
+              />
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <div>
+        <h2 class='mb-2 font-bold'>No Learnings Available</h2>
+        <p>Check back later for new insights and learnings!</p>
+      </div>
+    )
+  }
+</BaseLayout>
