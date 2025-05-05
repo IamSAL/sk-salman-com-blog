@@ -1,0 +1,10 @@
+{
+    "directory": {
+      "authn.sk-salman.com": {
+        "origins": ["https://authn.sk-salman.com"],
+        "attestation": {
+          "none": {}
+        }
+      }
+    }
+  }
