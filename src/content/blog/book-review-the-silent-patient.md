@@ -1,6 +1,6 @@
 ---
 title: "Book Review: The Silent Patient"
-publishDate: 2024-12-19
+publishDate: 2025-01-25
 description: "A compelling psychological thriller exploring childhood trauma, love, betrayal, and the profound impact of silence in healing and revelation."
 tags: ["Reviews"]
 ---
