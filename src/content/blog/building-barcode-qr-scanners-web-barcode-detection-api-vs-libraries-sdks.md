@@ -1,25 +1,21 @@
 ---
 title: "Building Barcode & QR Scanners on the Web: The Barcode Detection API vs Libraries and Paid SDKs"
-publishDate: 2025-12-22
-description: "After trying ZXing (too slow), Quagga (too many false positives), and almost asking management to buy a paid SDK, I discovered the browser's native Barcode Detection API. It's 10x faster, handles rotation and low-light, and has a WASM polyfill for unsupported browsers. Here's everything I learned so you don't have to spend 3 days figuring it out."
+publishDate: 2025-12-25
+description: "I was recently tasked with implementing a QR code and barcode scanner in a React front-end project. I tried open-source JavaScript libraries, compared their pros and cons, and almost decided to tell management to buy a paid SDK...before I discovered the browser's native Barcode Detection API. This write-up is a summary of my 3-day decision-making process, so you can skip the research and save time next time you want to build a scanner in the browser."
 tags: ["React", "Tech", "WebDev", "Javascript"]
-image: "../../assets/images/scanner_banner.png"
+image: "../../assets/images/pexels-mr-sketch-55235740-18873956.jpg"
 ---
 
-![scanner_banner.png](../../assets/images/scanner_banner.png)
-
-//TODO: more relevant thumbnail
-
-I was recently tasked with implementing a QR code and barcode scanner in a React front-end project. I tried open-source JavaScript libraries, compared their pros and cons, and almost decided to tell management to buy a paid SDK—before I discovered the browser's native Barcode Detection API. This write-up is a summary of my 3-day decision-making process, so you can skip the research and save time next time you want to build a scanner in the browser.
+![scanner_banner.png](../../assets/images/pexels-mr-sketch-55235740-18873956.jpg)
 
 ## Requirements and Constraints
 
 I worked on a fin-tech mobile web app with features such as:
 
-- **Card registration**: Scanning barcodes from physical cards (CODE_128, CODE_39, Codabar, EAN_13 formats) in indoor low-light conditions
-- **QR payment**: Scanning QR codes from merchant outlets, supporting outdoor conditions with partially damaged, rotated, or moving codes
+- **Card registration**: Scanning barcodes(CODE_128) from physical cards in indoor low-light conditions
+- **QR payment**: Scanning QR(CODE_39) codes from merchant outlets, supporting outdoor conditions with partially damaged, rotated, or moving codes
 
-To sum up, my solution needed to be:
+My solution needed to be:
 
 1. **Accurate**: Reading a wrong card number or an invalid merchantID would result in bad UX and mean loss for business.
 2. **Fast**: Although the features had a maximum 30-second timeout for scanning, users are habituated to scan codes in sub-second periods. Ensuring a smooth user experience with instantaneous scan results was my responsibility.
@@ -29,7 +25,7 @@ To sum up, my solution needed to be:
 
 ## What I Tried First: Popular JS Libraries
 
-Heads up: We are a fast-paced, delivery-focused offshore team. We don't have the luxury to perform full-scale R&D on a feature from scratch—so naturally, I searched for OSS solutions and gave them a shot.
+Heads up: We are a fast-paced, delivery-focused offshore team. We don't have the luxury to perform full-scale R&D on a feature from scratch. Naturally, I searched for OSS solutions and gave them a shot.
 
 ### 1. <a href="https://github.com/zxing-js/library" target="_blank" rel="noopener noreferrer">ZXing-JS</a> (`@zxing/library`)
 
@@ -67,7 +63,7 @@ codeReader.reset();
 
 **Why it failed for my use case:**
 
-As the easiest choice, I went with it and gave it a try—until it reached QA, where it was tested against different variants' shapes, lights, and rotations of cards. Not surprisingly, although it was instantaneous during my dev test (for a small sample of codes I was provided with), it largely failed to be "fast." It usually took holding the phone for over 10 seconds with a stable sample code behind the camera.
+As the easiest choice, I went with it and gave it a try...until it reached QA, where it was tested against different variants' shapes, lights, and rotations of cards. Not surprisingly, although it was instantaneous during my dev test (for a small sample of codes I was provided with), it largely failed to be "fast." It usually took holding the phone for over 10 seconds with a stable sample code behind the camera.
 
 Three reasons I identified why it failed:
 
@@ -76,10 +72,6 @@ Three reasons I identified why it failed:
 3. **My mistake**: Instead of snapping and cropping only the QR/barcode area of the camera feed, I served the whole 1920×1080 image to ZXing, so it had to struggle to figure out the exact part where the barcode resides.
 
 I was able to make it a bit faster by pre-processing the frame better and sacrificing accuracy. But false positive results were not acceptable for my project.
-
-**//TODO: add a gif/video showing how ZXing times out for my use case, can't detect rotated codes.**
-
-**//TODO: add a gif/video showing how ZXing was usable after cropping.**
 
 **When to choose ZXing-JS:**
 
@@ -115,17 +107,7 @@ Quagga.init(
       },
     },
     decoder: {
-      readers: [
-        "code_128_reader",
-        "ean_reader",
-        "ean_8_reader",
-        "code_39_reader",
-        "code_39_vin_reader",
-        "codabar_reader",
-        "upc_reader",
-        "upc_e_reader",
-        "i2of5_reader",
-      ],
+      readers: ["code_128_reader", "code_39_reader"],
     },
     locate: true, // Enable barcode locator
     locator: {
@@ -154,19 +136,9 @@ Quagga.init(
 Quagga.stop();
 ```
 
-**Key configuration options I learned:**
-
-- **`locate: true`**: Enables the barcode locator—the key differentiator from ZXing
-- **`patchSize`**: Can be "x-small", "small", "medium", "large", "x-large". Larger = more accurate but slower
-- **`halfSample`**: Downsamples image for better performance
-- **`numOfWorkers`**: Number of web workers for parallel processing (2 is a good balance)
-- **`frequency`**: Controls how many times per second to scan (10 Hz was my sweet spot)
-
 **Why it failed for my use case:**
 
-In my experience, Quagga performed much faster to return read results—but sadly, it resulted in many **false positive reads**. I had to ensure proper validation of my expected result string because Quagga's result can't be directly trusted. The locator sometimes found patterns that looked like barcodes but weren't, leading to garbage output.
-
-**//TODO: add a gif/video showing how Quagga gives false reads.**
+In my experience, Quagga performed much faster to return read results. Sadly, it resulted in many **false positive reads**. I had to ensure proper validation of my expected result string because Quagga's result can't be directly trusted. The locator sometimes found patterns that looked like barcodes but weren't, leading to garbage output.
 
 **When to choose Quagga2:**
 
@@ -178,27 +150,23 @@ If you need **rotation-invariant** detection and can validate the scanned result
 
 ![meme.png](../../assets/images/mmeme.png)
 
-If you are building an industry-grade barcode scanner device and need to multi-scan 'lots' of codes at once, hands down, go for a paid SDK that fits your needs. In all the benchmarks, paid SDKs always win over OSS ones for edge cases, accuracy, and speed.
+If you are building a factory barcode scanner device and need to multi-scan 'lots' of codes at once, hands down, go for a paid SDK that fits your needs. In all the benchmarks, paid SDKs always win over OSS ones for edge cases, accuracy, and speed.
 
 **Popular paid options:**
 
-| SDK                                                                                                            | Strengths                                                          | Pricing Model        |
-| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | -------------------- |
-| <a href="https://demo.dynamsoft.com/document-scanner/" target="_blank" rel="noopener noreferrer">Dynamsoft</a> | 60fps scanning, multi-code detection, excellent edge case handling | Per-device licensing |
-| <a href="https://scanbot.io/" target="_blank" rel="noopener noreferrer">Scanbot</a>                            | Great mobile web performance, good documentation                   | Per-app licensing    |
-| <a href="https://www.scandit.com/" target="_blank" rel="noopener noreferrer">Scandit</a>                       | Enterprise-grade, AR overlays, MatrixScan                          | Enterprise pricing   |
+| SDK                                                                                                            | Strengths                                                          | Pricing Model |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------- |
+| <a href="https://demo.dynamsoft.com/document-scanner/" target="_blank" rel="noopener noreferrer">Dynamsoft</a> | 60fps scanning, multi-code detection, excellent edge case handling |
+| <a href="https://scanbot.io/" target="_blank" rel="noopener noreferrer">Scanbot</a>                            | Great mobile web performance, good documentation                   |
+| <a href="https://www.scandit.com/" target="_blank" rel="noopener noreferrer">Scandit</a>                       | Enterprise-grade, AR overlays, MatrixScan                          |
 
 Just to save you a Google search, I found <a href="https://demo.dynamsoft.com/document-scanner/" target="_blank" rel="noopener noreferrer">Dynamsoft's Demo</a> to be the North Star of all readers in the market.
-
-**//TODO: add a gif/video showing how Dynamsoft scans at 60fps.**
 
 For most web apps, an industry-grade scanner is well beyond the demand. Most apps will be fine implementing an open-source scanner. And needless to say, I was in a position where convincing the client to buy a paid SDK would be nearly impossible, and my project also didn't require factory-level speed or multi-scanning features. So I chose not to explore paid SDKs further.
 
 ---
 
 ## The Winner: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Barcode_Detection_API" target="_blank" rel="noopener noreferrer">Barcode Detection API</a> + ZXing WASM Polyfill
-
-**//TODO: add a gif/video showing how the native API is fast, accurate, and performant.**
 
 After 3 days of trial and error and almost a week of frustration, along came the blessing of GPT, which enlightened me about the existence of a **native implementation** of barcode detection in browsers.
 
@@ -223,13 +191,10 @@ if ("BarcodeDetector" in window) {
   // Get supported formats
   const supportedFormats = await BarcodeDetector.getSupportedFormats();
   console.log(supportedFormats);
-  // e.g., ['aztec', 'code_128', 'code_39', 'code_93', 'codabar',
-  //        'data_matrix', 'ean_13', 'ean_8', 'itf', 'pdf417',
-  //        'qr_code', 'upc_a', 'upc_e']
 
   // Create detector
   const barcodeDetector = new BarcodeDetector({
-    formats: ["code_39", "codabar", "ean_13", "code_128", "qr_code"],
+    formats: ["code_39", "code_128"],
   });
 
   // Detect from video frame or image
@@ -237,7 +202,7 @@ if ("BarcodeDetector" in window) {
   barcodes.forEach((barcode) => {
     console.log(barcode.rawValue); // The decoded string
     console.log(barcode.format); // e.g., 'code_128'
-    console.log(barcode.boundingBox); // DOMRectReadOnly
+    console.log(barcode.boundingBox); // DOMRectReadOnly, useful if you want a draw custom ui or focus boxes.
     console.log(barcode.cornerPoints); // [{x, y}, ...]
   });
 }
@@ -378,14 +343,14 @@ const stream = await navigator.mediaDevices.getUserMedia({
 
 ### Performance Comparison
 
-| Library                | Detection Speed | Accuracy                 | Rotation Support | Bundle Size  |
-| ---------------------- | --------------- | ------------------------ | ---------------- | ------------ |
-| ZXing-JS               | ~300-500ms      | Good                     | ❌               | ~200KB       |
-| Quagga2                | ~100-200ms      | Medium (false positives) | ✅               | ~150KB       |
-| Native API             | ~16-50ms        | Excellent                | ✅               | 0KB (native) |
-| Native + WASM Polyfill | ~50-100ms       | Excellent                | ✅               | ~2MB (WASM)  |
+| Library                | Detection Speed | Accuracy                 | Rotation Support | Bundle Size              |
+| ---------------------- | --------------- | ------------------------ | ---------------- | ------------------------ |
+| ZXing-JS               | ~300-500ms      | Good                     | ❌               | ~200KB                   |
+| Quagga2                | ~100-200ms      | Medium (false positives) | ✅               | ~150KB                   |
+| Native API             | ~16-50ms        | Excellent                | ✅               | 0KB (native)             |
+| Native + WASM Polyfill | ~50-100ms       | Excellent                | ✅               | ~2MB (WASM, lazy loaded) |
 
-The native API running at **60fps** (one detection per frame) vs ZXing struggling at 2-3 detections per second—the difference is night and day.
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/_pykgAz4JO8?si=ygT-qz0PPTdhoiOd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 
@@ -399,30 +364,26 @@ Need barcode/QR scanning?
 ├─ Need rotation-invariant detection?
 │   └─ Can validate results on backend? ───► Use Quagga2
 │
-├─ Need industry-grade performance?
+├─ Need physical barcode reader's performance?
 │   └─ Multi-scan, 60fps, edge cases? ─────► Pay for Dynamsoft/Scanbot
 │
 └─ General web app, good-enough speed?
-    └─ Most real-world use cases ──────────► Use Barcode Detection API
-                                               + barcode-detector polyfill
+    └─ Most real-world use cases ──────────► Barcode Detection API
 ```
 
 ---
 
 - **Try the demo app**: <a href="http://barcode-scanner.sk-salman.com" target="_blank" rel="noopener noreferrer">barcode-scanner.sk-salman.com</a>
-
 - **Source code of demo**: <a href="https://github.com/IamSAL/barcode-scanner-demo" target="_blank" rel="noopener noreferrer">github.com/IamSAL/barcode-scanner-demo</a>
 
 ---
 
 ## Key Takeaways
 
-1. **Crop your input**: Don't feed the full camera frame to any detector. Crop to a focus area for 5-10x speed improvement.
-
+1. **Crop your input**: Don't feed the full camera frame to any detector. Crop to a focus area for speed and accuracy.
 2. **Use `requestAnimationFrame`**: For real-time scanning, use rAF instead of `setInterval` for smoother performance.
-
-3. **The Barcode Detection API is underrated**: It's natively available in Chromium browsers and the WASM polyfill covers the rest.
-
+3. **The Barcode Detection API is underrated**: Browser support issue is rendered practically irrelevant by WASM polyfill.
 4. **Validate your results**: Especially with Quagga, always validate scanned values against expected formats or backend data.
+5. **Consider UX**: Show a focus area overlay to guide users where to position the barcode, this with proper cropping dramatically improves scan success rate.
 
-5. **Consider UX**: Show a focus area overlay to guide users where to position the barcode—this dramatically improves scan success rate.
+> **Disclaimer:** This article is based on my personal experience. My usage of the libraries and my use case may differ from yours. Please consider your specific requirements when evaluating these tools.
