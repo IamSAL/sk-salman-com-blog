@@ -1,19 +1,34 @@
 ---
 import "@src/global.css";
 import { SITE_CONFIG, TWITTER_CONFIG } from "@src/site-config";
+import { getImage } from "astro:assets";
 
 type Props = {
   title?: string | undefined;
   description?: string | undefined;
+  image?: ImageMetadata | undefined;
 };
 
 const {
   title = SITE_CONFIG.defaultTitle,
   description = SITE_CONFIG.defaultDescription,
+  image,
 } = Astro.props;
 const urlStr = Astro.url.toString();
 const urlWithTrailingSlash = urlStr.endsWith("/") ? urlStr : urlStr + "/";
-const opengraphImageUrl = new URL(`./opengraph-image`, urlWithTrailingSlash);
+
+let opengraphImageUrl: URL;
+if (image) {
+  const optimizedImage = await getImage({
+    src: image,
+    width: 1200,
+    height: 630,
+  });
+  opengraphImageUrl = new URL(optimizedImage.src, Astro.site);
+} else {
+  opengraphImageUrl = new URL(`./opengraph-image`, urlWithTrailingSlash);
+}
+
 const twitterHandle = TWITTER_CONFIG.handleName;
 ---
 
