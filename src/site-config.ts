@@ -39,10 +39,16 @@ export const SITE_CONFIG: SiteConfig = {
   defaultDescription:
     "Frontend developer with expertise in TypeScript, React, Next.js, and Angular. Focused on quality UX and DX.",
   timeline: [
+     {
+      name: "Cefalo",
+      url: "#",
+      time: "Feb 2026 – Present",
+      description: "Full-stack developer working for a Norwegian news and media conglomerate.",
+    },
     {
       name: "KONA Software Lab Ltd.",
       url: "#",
-      time: "Apr 2022 – Dec 2023",
+      time: "Apr 2022 – Jan 2026",
       description: "Developing UIs for fintech with React/Next/Angular.",
     },
     {
