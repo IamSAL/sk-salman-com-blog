@@ -24,7 +24,7 @@ const { learning } = Astro.props;
 const { Content } = await learning.render();
 ---
 
-<BaseLayout title={learning.data.title}>
+<BaseLayout title={learning.data.title} image={learning.data.image}>
   <ArticleLayout
     title={learning.data.title}
     publishDate={learning.data.publishDate}

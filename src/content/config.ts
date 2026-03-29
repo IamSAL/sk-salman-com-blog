@@ -15,12 +15,14 @@ const blogCollection = defineCollection({
 
 const learningsCollection = defineCollection({
   type: "content",
-  schema: z.object({
-    title: z.string(),
-    publishDate: z.date(),
-    isDraft: z.boolean().optional(),
-    tags: z.array(z.string()).optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      publishDate: z.date(),
+      isDraft: z.boolean().optional(),
+      tags: z.array(z.string()).optional(),
+      image: image().optional(),
+    }),
 });
 
 export const collections = {
